@@ -17,8 +17,8 @@ const i18n = require('i18next');
 const languageStrings = require('./languageStrings');
 const sprintf = require('i18next-sprintf-postprocessor');
 /* personalization Utility */
-const personalizationUtil = require('./personalizationUtil')
-const personalizationStorageUtil = require('./personalizationStorageUtil')
+//const personalizationUtil = require('./personalizationUtil')
+//const personalizationStorageUtil = require('./personalizationStorageUtil')
 const aplDoc = require('./documents/facts.json');
 const DEFAULT_TOPIC = "SPACE"
 //const FOOTBALL = "FOOTBALL"
@@ -49,7 +49,7 @@ const GetNewFactHandler = {
     // the random item from the array will be selected by the i18next library
     // the i18next library is set up in the Request Interceptor
     const randomFact = requestAttributes.t(getTopicLookupText(topicName, requestAttributes));
-    const name = personalizationUtil.getPersonalizedPrompt(handlerInput);
+//    const name = personalizationUtil.getPersonalizedPrompt(handlerInput);
     // concatenates a standard message with the random fact
     var speakOutput = ""
     speakOutput = randomFact
@@ -100,7 +100,7 @@ const getTopicName = async function (handlerInput, requestAttributes) {
     console.log("inside current Intent " + currentIntent.slots.factType.value)
     return currentIntent.slots.factType.value;
   }
-  return await personalizationStorageUtil.getPreferenceOrDefault(handlerInput, requestAttributes.t(DEFAULT_TOPIC));
+//  return await personalizationStorageUtil.getPreferenceOrDefault(handlerInput, requestAttributes.t(DEFAULT_TOPIC));
 }
 
 /**
@@ -129,30 +129,30 @@ const getTopicLookupText = (topicName, requestAttributes) => {
  * Persists fact type intent details using personlized preference storage.
  * 
  */
-const SetPersonalizedFactPreferencesHandler = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    // checks request type
-    return request.type === 'IntentRequest'
-      && request.intent.name === 'AddNewFact';
-  },
-  async handle(handlerInput) {
-    const currentIntent = handlerInput.requestEnvelope.request.intent;
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    var message = requestAttributes.t('ERROR_MESSAGE');
-    if (currentIntent.slots.factType && currentIntent.slots.factType.value) {
-      const factType = currentIntent.slots.factType.value;
+//const SetPersonalizedFactPreferencesHandler = {
+//  canHandle(handlerInput) {
+//    const request = handlerInput.requestEnvelope.request;
+//    // checks request type
+//    return request.type === 'IntentRequest'
+//      && request.intent.name === 'AddNewFact';
+//  },
+//  async handle(handlerInput) {
+//    const currentIntent = handlerInput.requestEnvelope.request.intent;
+//    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+//    var message = requestAttributes.t('ERROR_MESSAGE');
+//    if (currentIntent.slots.factType && currentIntent.slots.factType.value) {
+//      const factType = currentIntent.slots.factType.value;
       //persist new fact as personlized perference
-     const persistenceConfirmation = await personalizationStorageUtil.savePreference(handlerInput, factType)
+//     const persistenceConfirmation = await personalizationStorageUtil.savePreference(handlerInput, factType)
       //give back error message if personalization not enabled.
-      message = persistenceConfirmation === undefined ? requestAttributes.t('PREFERENCE_ERROR') : (requestAttributes.t('CONFIRMATION_MESSAGE', personalizationUtil.getPersonalizedPrompt(handlerInput), factType))
-    }
-    return handlerInput.responseBuilder
-      .speak(message)
-      .reprompt(requestAttributes.t('HELP_REPROMPT'))
-      .getResponse();
-  },
-};
+//      message = persistenceConfirmation === undefined ? requestAttributes.t('PREFERENCE_ERROR') : (requestAttributes.t('CONFIRMATION_MESSAGE', personalizationUtil.getPersonalizedPrompt(handlerInput), factType))
+//    }
+//    return handlerInput.responseBuilder
+//      .speak(message)
+//     .reprompt(requestAttributes.t('HELP_REPROMPT'))
+//      .getResponse();
+//  },
+//};
 
 //const HelpHandler = {
 //  canHandle(handlerInput) {
@@ -276,6 +276,6 @@ exports.handler = skillBuilder
   .addRequestInterceptors(LocalizationInterceptor)
   .addErrorHandlers(ErrorHandler)
   //define personalized persistence adapter for preference storage. 
-  .withPersistenceAdapter(personalizationStorageUtil.personlizedPersitenceAdapter())
+  //.withPersistenceAdapter(personalizationStorageUtil.personlizedPersitenceAdapter())
   //.withCustomUserAgent('sample/basic-fact/v2')
   .lambda();
